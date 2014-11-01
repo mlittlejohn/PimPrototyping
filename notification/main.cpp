@@ -1,0 +1,81 @@
+/****************************************************************************
+**
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the QtAndroidExtras module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
+**
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+#include <QtGui>
+#include <QtQuick>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include <QVideoWidget>
+#include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
+
+#include "notificationclient.h"
+#include "GpsClient.h"
+#include "FileTest.h"
+#include "NetworkTest.h"
+
+int main(int argc, char **argv)
+{
+    QGuiApplication app(argc, argv);
+
+    FileTest *fileTest = new FileTest();
+    fileTest->writeFilesToDisk();
+    fileTest->readFilesFromDisk();
+
+    NetworkTest *networkTest = new NetworkTest();
+    networkTest->TestHttp();
+
+    QQuickView view;
+
+    GpsClient *gpsClient = new GpsClient(&view);
+    view.engine()->rootContext()->setContextProperty(QLatin1String("gpsClient"),
+                                                     gpsClient);
+
+    NotificationClient *notificationClient = new NotificationClient(&view);
+    view.engine()->rootContext()->setContextProperty(QLatin1String("notificationClient"),
+                                                     notificationClient);
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    view.setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+
+    view.show();
+
+    return app.exec();
+}
