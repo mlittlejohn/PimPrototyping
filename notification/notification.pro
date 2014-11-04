@@ -1,5 +1,7 @@
 QT += quick androidextras positioning multimediawidgets network
 
+CONFIG += debug
+
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
 SOURCES += \

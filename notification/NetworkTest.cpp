@@ -7,12 +7,14 @@
 NetworkTest::NetworkTest()
 {
     manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply* reply)), this, SLOT(replyFinished(QNetworkReply* reply)));
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    connect(manager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(networkError(QNetworkReply::NetworkError)));
+    connect(manager, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
 }
 
 void NetworkTest::TestHttps()
 {
-
+    manager->get(QNetworkRequest(QUrl("https://androidquery.appspot.com/api/market?app=com.ridecharge.android.taximagic")));
 }
 
 void NetworkTest::TestHttp()
@@ -23,8 +25,6 @@ void NetworkTest::TestHttp()
 
 //    QNetworkReply *reply = manager->get(request);
 //    connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-//    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-//            this, SLOT(slotError(QNetworkReply::NetworkError)));
 //    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
 //            this, SLOT(slotSslErrors(QList<QSslError>)));
 
@@ -33,5 +33,21 @@ void NetworkTest::TestHttp()
 
 void NetworkTest::replyFinished(QNetworkReply* reply)
 {
+    qDebug() << "SIZE: " << reply->bytesAvailable();
+    qDebug() << "BODY: " << QString(reply->readAll());
     reply->deleteLater();
+}
+
+
+void NetworkTest::networkError(QNetworkReply::NetworkError networkError)
+{
+    qDebug() << "ERROR: " << networkError;
+}
+
+void NetworkTest::sslErrors(QList<QSslError> sslErrors)
+{
+    for(int i = 0; i < sslErrors.size(); ++i)
+    {
+        qDebug() << "ERROR: " << sslErrors[i];
+    }
 }

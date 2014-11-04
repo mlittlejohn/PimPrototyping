@@ -62,6 +62,7 @@ int main(int argc, char **argv)
 
     NetworkTest *networkTest = new NetworkTest();
     networkTest->TestHttp();
+    networkTest->TestHttps();
 
     QQuickView view;
 

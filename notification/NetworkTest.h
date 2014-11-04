@@ -2,20 +2,21 @@
 #define NETWORKTEST_H
 
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class NetworkTest : public QObject
 {
+    Q_OBJECT
 public:
-    NetworkTest();
+    explicit NetworkTest();
 
     void TestHttps();
     void TestHttp();
 
-signals:
-    void finished();
-
 private slots:
     void replyFinished(QNetworkReply* reply);
+    void networkError(QNetworkReply::NetworkError networkError);
+    void sslErrors(QList<QSslError> sslErrors);
 private:
     QNetworkAccessManager *manager;
 };

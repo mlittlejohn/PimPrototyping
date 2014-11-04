@@ -31,7 +31,7 @@ void GpsClient::positionUpdated(const QGeoPositionInfo &info)
         emit positionChanged();
     }
 
-    qDebug() << "Position updated:" << info;
+    // qDebug() << "Position updated:" << info;
 
 }
 
